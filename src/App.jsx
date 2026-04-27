@@ -61,7 +61,7 @@ const App = () => {
     // HRA Exemption (Old Regime)
     const hraSal = n('hraSalary') > 0 ? n('hraSalary') : (n('basic') + n('da'));
     const rentEx = Math.max(0, n('rentPaid') - (hraSal * 0.1));
-    const metroEx = hraSal * (formData.isMetro ? 0.5 : 0.4);
+    const metroEx = hraSal * (Boolean(formData.isMetro === true || formData.isMetro === 'true') ? 0.5 : 0.4);
     const hraExemption = Math.min(n('hraReceived'), rentEx, metroEx);
 
     // Minor Exemptions

@@ -63,9 +63,15 @@ export const calculateTax = (salaryData) => {
   const structure = generateOptimalStructure(sCTC, isMetro, numChildren, numHostelChildren);
 
   // 1. OLD REGIME CALCULATION
-  const rentMinus10Basic = Math.max(0, sRent - (structure.basic * 0.1));
-  const basicPct = structure.basic * (isMetro ? 0.5 : 0.4);
-  const hraExemption = Math.min(structure.hraReceived, rentMinus10Basic, basicPct);
+  // Prefer provided basic/da/hraReceived if they exist in salaryData, otherwise use structure
+  const currentBasic = safeNum(salaryData.basic) || structure.basic;
+  const currentDA = safeNum(salaryData.da);
+  const currentHRAReceived = safeNum(salaryData.hraReceived) || structure.hraReceived;
+  const hSalary = currentBasic + currentDA;
+
+  const rentMinus10Basic = Math.max(0, sRent - (hSalary * 0.1));
+  const basicPct = hSalary * (isMetro ? 0.5 : 0.4);
+  const hraExemption = Math.min(currentHRAReceived, rentMinus10Basic, basicPct);
 
   // Exemptions in Old Regime (Image 3)
   const oldExemptions = [
